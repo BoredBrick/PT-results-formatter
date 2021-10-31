@@ -1,8 +1,8 @@
-import ctypes
-import glob
+import ctypes  # použité na vyskakovacie okná pri chybách
+import glob  # globovanie súborov, aby užívateľ nemusel zadávať jeho názov
 import csv
-import os
-import sys
+from os import path  # získanie current working directory
+import sys  # exit systému pri chybe so súbormi
 from student import Student
 
 
@@ -64,7 +64,7 @@ class DataProcessing:
         file_name = "importBezChyb.csv" if file_type == "no_errors" else "importSChybami.csv"
         with open(file_name, "a+") as import_file:
             writer = csv.writer(import_file)
-            filesize = os.path.getsize(file_name)
+            filesize = path.getsize(file_name)
             if filesize == 0:
                 writer.writerow(["Email", "Skore"])
             string = f'{student.email} {student.pt_percentage}'

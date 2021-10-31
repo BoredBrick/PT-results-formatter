@@ -1,4 +1,4 @@
-import csv
+import csv  # modul pre prácu s csv súbormi
 from data_processing import DataProcessing
 
 
