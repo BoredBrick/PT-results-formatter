@@ -8,6 +8,9 @@ from student import Student
 
 class DataProcessing:
 
+    def __init__(self) -> None:
+        self.activity_name = ""
+
     def get_file(self, file_type: str) -> str:
         if file_type == "results":
             file = glob.glob('*details.csv')
@@ -24,6 +27,16 @@ class DataProcessing:
             sys.exit(0)
 
         return file[0]  # konvertuje list na string
+
+    def get_activity_name(self, results_file):
+        with open(results_file) as file:
+            csv_reader = csv.reader(file)
+            next(csv_reader)
+            UNDERSCORES_TO_FILTER = 6  # kolko _ oddeluje nazov aktivity a datum s menom
+            for row in csv_reader:
+                file_name = row[2].split("/")[1]
+                self.activity_name = file_name.rsplit("_", UNDERSCORES_TO_FILTER)[0]
+                break
 
     def get_student_emails(self, students: list, students_file: str) -> None:
         with open(students_file, encoding='utf-8') as student_data:
@@ -61,12 +74,12 @@ class DataProcessing:
                 self.write_to_list_of_students_with_errors(student)
 
     def write_to_import_file(self, student: Student, file_type: str) -> None:
-        file_name = "importBezChyb.csv" if file_type == "no_errors" else "importSChybami.csv"
+        file_name = "importStudBezChyb.csv" if file_type == "no_errors" else "importStudSChybami.csv"
         with open(file_name, "a+") as import_file:
             writer = csv.writer(import_file)
             filesize = path.getsize(file_name)
             if filesize == 0:
-                writer.writerow(["Email", "Skore"])
+                writer.writerow(["Email", f'Aktivita: {self.activity_name}'])
             string = f'{student.email} {student.pt_percentage}'
             row = list(string.split())
             writer.writerow(row)

@@ -25,6 +25,7 @@ if __name__ == "__main__":
     FULL_SCORE = 79
     dataProcessing = DataProcessing()
     results_file = dataProcessing.get_file("results")
+    dataProcessing.get_activity_name(results_file)
     stud_file = dataProcessing.get_file("students")
     students = []
     process_pt_results(results_file, students)
