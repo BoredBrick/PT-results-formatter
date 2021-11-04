@@ -1,4 +1,3 @@
-import csv  # modul pre prácu s csv súbormi
 from data_processing import DataProcessing
 
 
@@ -13,21 +12,13 @@ from data_processing import DataProcessing
 #     print(full_score)
 
 
-def process_pt_results(results_file_name: str, students: list) -> None:
-    with open(results_file_name) as results:
-        csv_reader = csv.reader(results)
-        next(csv_reader)
-        for row in csv_reader:
-            dataProcessing.extract_student_data(row, students, FULL_SCORE)
-
-
 if __name__ == "__main__":
-    FULL_SCORE = 79
+    FULL_SCORE = 223
     dataProcessing = DataProcessing()
     results_file = dataProcessing.get_file("results")
     dataProcessing.get_activity_name(results_file)
     stud_file = dataProcessing.get_file("students")
     students = []
-    process_pt_results(results_file, students)
-    dataProcessing.get_student_emails(students, stud_file)
+    dataProcessing.process_pt_results(results_file, students, FULL_SCORE)
+    dataProcessing.get_and_assign_student_mails(students, stud_file)
     dataProcessing.create_import_file(students)
