@@ -69,9 +69,13 @@ class DataProcessing:
         name_from_file = str(temp[1]).strip() + " " + str(temp[2].split(".")[0]).strip()
         packet_name = row[0].replace("_", " ").strip()
         pt_percentage = round((float(row[3]) / full_score * 100), 2)
+
+        if packet_name == "Guest" or pt_percentage < 60:
+            pt_percentage = 0
         students.append(Student(full_name, name_from_file, packet_name, pt_percentage))
 
     # zapisovanie výsledok do súboru na import podľa toho, či má správne meno v PT
+
     def create_import_file(self, students: list) -> None:
         for student in students:
             if student.check_name_correctness():
@@ -108,8 +112,8 @@ class DataProcessing:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
         else:
-            shutil.rmtree(folder_name, ignore_errors=True)
-            os.makedirs(folder_name)
+            for file in os.scandir(folder_name):
+                os.unlink(file.path)
 
     # spracovanie celého súboru s výsledkami aktivity
 
