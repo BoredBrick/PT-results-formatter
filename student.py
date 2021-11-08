@@ -14,9 +14,14 @@ class Student:
     def check_name_correctness(self) -> bool:
         name_wo_accents = unidecode.unidecode(self.full_name.lower())
         name_wo_accents_reversed = self.__reverse_name(name_wo_accents)
-        return (name_wo_accents == self.packet_name) or (name_wo_accents_reversed == self.packet_name)
+        return name_wo_accents == self.packet_name or name_wo_accents_reversed == self.packet_name
+
+    # kontrola, či študentovi bolo priradené meno
+    def email_found(self) -> bool:
+        return self.email != ""
 
     # obrátenie mena, pre prípad, že ho študent uvedie ako Meno_Priezvisko
+
     @staticmethod
     def __reverse_name(name: str) -> str:
         words = name.split(' ')
