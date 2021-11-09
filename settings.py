@@ -2,19 +2,9 @@ import configparser
 
 
 def reset_settings(parser: configparser) -> None:
-
-    parser.set("stud_cols", "name", "0")
-    parser.set("stud_cols", "surname", "1")
-    parser.set("stud_cols", "email", "5")
-    parser.set("stud_cols", "glob", "*comma_separated.csv")
-
-    parser.set("activity_cols", "pt_name", "0")
-    parser.set("activity_cols", "file_name", "2")
-    parser.set("activity_cols", "percentage", "3")
-    parser.set("activity_cols", "glob", "*details.csv")
-
-    with open('settings.ini', 'w') as configfile:
-        parser.write(configfile)
+    """Reset údajov na pôvodné odskúšané hodnoty"""
+    def_values = [0, 1, 5, "*comma_separated.csv", 0, 2, 3, "*details.csv"]
+    set_settings(parser, def_values)
 
 
 def set_settings(parser: configparser, values: list):

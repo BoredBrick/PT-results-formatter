@@ -5,6 +5,7 @@ import settings
 
 
 def main_menu() -> None:
+    """Grafika pre hlavné menu, ktoré sa otvorí po spustení"""
     sg.theme('DarkAmber')
     layout = [[sg.Button("Štart"), sg.Button("Nastavenia"), sg.Button("O programe"), sg.Exit("Koniec")]]
 
@@ -16,7 +17,8 @@ def main_menu() -> None:
         elif event == "Štart":
             break
         elif event == "O programe":
-            sg.PopupOK("Program na spracovanie výsledkov z PT aktivít do formátu, ktorý umožňuje ich jednoduchý import na moodle\n",
+            sg.PopupOK("Program na spracovanie výsledkov z PT aktivít do formátu,\
+                ktorý umožňuje ich jednoduchý import na moodle\n",
                        "Vytvorené v rámci bakalárskej práce: ",
                        " \"Zvýšenie automatizácie v procesoch pri využívaní systému e-vzdelávanie a LMS Moodle\" ",
                        "Daniel Caban 2021/2022",
@@ -27,24 +29,29 @@ def main_menu() -> None:
 
 
 def edit_settings() -> None:
+    """
+    Ponuka, kde je možnosť upraviť, v ktorých stĺpcoch sa nachádzajú
+    požadované dáta + globovanie súborov, pre prípad, že by sa do budúcna
+    zmenil formát niektorých z týchto dokumentov
+    """
     sg.theme('DarkAmber')
     cfg = configparser.ConfigParser()
     cfg.read("settings.ini")
 
     column1 = [[sg.Text('Súbor s údajmi študentov')],
-               [sg.Text('Meno', key="_SN_", size=(10, 1)), sg.Input(cfg["stud_cols"]["name"], size=(10, 1))],
-               [sg.Text('Priezvisko', key="_SS_", size=(10, 1)), sg.Input(cfg["stud_cols"]["surname"], size=(10, 1))],
-               [sg.Text('Email', key="_SE_", size=(10, 1)), sg.Input(cfg["stud_cols"]["email"], size=(10, 1))],
-               [sg.Text('Glob', key="_SG_", size=(10, 1)), sg.Input(cfg["stud_cols"]["glob"], size=(10, 1))]]
+               [sg.Text('Meno', size=(10, 1)), sg.Input(cfg["stud_cols"]["name"], size=(10, 1))],
+               [sg.Text('Priezvisko', size=(10, 1)), sg.Input(cfg["stud_cols"]["surname"], size=(10, 1))],
+               [sg.Text('Email', size=(10, 1)), sg.Input(cfg["stud_cols"]["email"], size=(10, 1))],
+               [sg.Text('Glob', size=(10, 1)), sg.Input(cfg["stud_cols"]["glob"], size=(10, 1))]]
 
     column2 = [[sg.Text('Súbor s výsledkami aktivít')],
-               [sg.Text('Meno z PT', key="_AP_", size=(10, 1)), sg.Input(
+               [sg.Text('Meno z PT',  size=(10, 1)), sg.Input(
                    cfg["activity_cols"]["pt_name"], size=(10, 1))],
-               [sg.Text('Názov súboru', key="_AF_", size=(10, 1)), sg.Input(
+               [sg.Text('Názov súboru',  size=(10, 1)), sg.Input(
                    cfg["activity_cols"]["file_name"], size=(10, 1))],
-               [sg.Text('Výsledok', key="_APE_", size=(10, 1)), sg.Input(
+               [sg.Text('Výsledok', size=(10, 1)), sg.Input(
                    cfg["activity_cols"]["percentage"], size=(10, 1))],
-               [sg.Text('Glob', key="_AG_", size=(10, 1)), sg.Input(cfg["activity_cols"]["glob"], size=(10, 1))]]
+               [sg.Text('Glob', size=(10, 1)), sg.Input(cfg["activity_cols"]["glob"], size=(10, 1))]]
 
     layout = [[sg.Column(column1), sg.Column(column2)],
               [sg.Button("Ok", size=(10, 1)), sg.Button("Reset", size=(10, 1)), sg.Button("Zruš", size=(10, 1))]]
@@ -63,6 +70,7 @@ def edit_settings() -> None:
 
 
 def get_activity_max_points() -> int:
+    """Užívateľ zadá maximálny počet bodov z aktivity"""
     while True:
         sg.theme('DarkAmber')
 

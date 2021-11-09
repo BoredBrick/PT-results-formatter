@@ -41,9 +41,11 @@ class DataProcessing:
         return file[0]  # konvertuje list na string
 
     def get_activity_name(self, results_file: str, cfg: configparser):
-        """V danom stĺpci sa nachádza cely názov odovzdaného súboru, za predpokladu
+        """
+        V danom stĺpci sa nachádza cely názov odovzdaného súboru, za predpokladu
         že študent odovzdal súbor v správnom formáte. Kedže poznám študentov, tak
-        som pridal kontrolu, ktorá hľadá dva za sebou zhodné názvy"""
+        som pridal kontrolu, ktorá hľadá dva za sebou zhodné názvy
+        """
         with open(results_file) as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
