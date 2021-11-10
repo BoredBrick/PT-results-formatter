@@ -13,6 +13,7 @@ class Student:
         self.name_from_file = name_from_file.lower()
         self.packet_name = packet_name.lower()
         self.pt_percentage = pt_percentage
+        self.compulsory = False
 
     def check_name_correctness(self) -> bool:
         """kontrola, či sa meno študenta zhoduje s menom, ktoré uviedol v aktivite"""

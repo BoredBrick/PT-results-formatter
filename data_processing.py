@@ -27,18 +27,51 @@ class DataProcessing:
             file = glob.glob(cfg["activity_cols"]["glob"])
         elif file_type == "students":
             file = glob.glob(cfg["stud_cols"]["glob"])
+        elif file_type == "compulsory":
+            file = glob.glob(cfg["compulsory_cols"]["glob"])
 
-        if len(file) == 0:
-            gui.generic_error("Priečinok neobsahuje požadované súbory \
-                (zoznam študentov alebo výpis aktivity)")
-            sys.exit(0)
-        elif len(file) > 1:
-            gui.generic_error(
-                "Priečinok obsahuje viacero súborov, ktoré by mohli byť použité ako zoznam"
-                "študentov alebo ako výpis aktivity. Odstráňte nepotrebné súbory.")
-            sys.exit(0)
+        if file_type != "compulsory":
+            if len(file) == 0:
+                gui.generic_error("Priečinok neobsahuje požadované súbory \
+                    (zoznam študentov alebo výpis aktivity)")
+                sys.exit(0)
+            elif len(file) > 1:
+                gui.generic_error(
+                    "Priečinok obsahuje viacero súborov, ktoré by mohli byť použité ako zoznam"
+                    "študentov alebo ako výpis aktivity. Odstráňte nepotrebné súbory.")
+                sys.exit(0)
+
+        if file_type == "compulsory" and len(file) == 0:
+            return ""
 
         return file[0]  # konvertuje list na string
+
+    @staticmethod
+    def get_dict_of_compulsory(compulsory_file: str, cfg: configparser) -> dict:
+        name_dict = {}
+        try:
+            with open(compulsory_file) as file:
+                csv_reader = csv.reader(file)
+                next(csv_reader)
+                for row in csv_reader:
+                    name_dict[row[cfg.getint("compulsory_cols", "full_name")]] = False
+            return name_dict
+        except FileNotFoundError:
+            return name_dict
+
+    @staticmethod
+    def mark_compulsory_students(compulsory_dict: dict, students: list) -> None:
+        for student in students:
+            if student.full_name in compulsory_dict:
+                student.compulsory = True
+                compulsory_dict[student.full_name] = True
+
+    @staticmethod
+    def create_file_comp_not_submitted(compulsory_dict: dict) -> None:
+        for key, value in compulsory_dict.items():
+            if value == False:
+                with open("vysledky/povinnáNeodovzdaná.txt", "a+",  encoding='utf-8') as file:
+                    file.write(f'{key} neodovzdal/a povinnú DÚ \n')
 
     def get_activity_name(self, results_file: str, cfg: configparser):
         """
@@ -77,7 +110,7 @@ class DataProcessing:
             next(csv_reader)
             surname_col = cfg.getint("stud_cols", "surname")
             name_col = cfg.getint("stud_cols", "name")
-            email_col = cfg.getint("stud_cols", "name")
+            email_col = cfg.getint("stud_cols", "email")
 
             for row in csv_reader:
                 full_name = (row[surname_col] + " " + row[name_col]).strip()
@@ -114,7 +147,9 @@ class DataProcessing:
         for student in students:
             student_has_email = student.email_found()
             student_has_correct_pt_name = student.check_name_correctness()
-            if student_has_correct_pt_name and student_has_email:
+            if student.compulsory:
+                self.write_to_compulsory_submitted(student)
+            elif student_has_correct_pt_name and student_has_email:
                 self.write_to_import_file(student, "importStudBezChyb.csv")
                 self.write_to_import_file(student, "importVsetci.csv")
             elif student_has_email:  # študent uviedol nesprávne meno v aktivite
@@ -139,8 +174,14 @@ class DataProcessing:
             writer.writerow(row)
 
     @staticmethod
+    def write_to_compulsory_submitted(student: Student):
+        with open("vysledky/povinnáOdovzdaná.txt", "a+", encoding='utf-8') as file:
+            file.write(f'{student.full_name} odovzdal/a zadanie na {student.pt_percentage}% \n')
+
+    @staticmethod
     def write_to_list_of_students_with_errors(student: Student, error_type: str) -> None:
         """pri nesprávnom mene/chýbajúcom maily sa táto skutočnost zapíše do samostatného súboru"""
+
         with open("vysledky/Nesprávne odovzdané.txt", "a+") as file:
             if error_type == "missing_mail":
                 file.write(
