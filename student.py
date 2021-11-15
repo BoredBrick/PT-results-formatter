@@ -1,10 +1,10 @@
-import unidecode  # umožnuje odstránenie diakritiky z mien
+import unidecode  # used to remove accents from name
 
 
 class Student:
     """
-    Trieda študent reprezentuje jedného študenta, údaje o 
-    ňom spolu s výsledkom z aktivity
+    Class Student represents one student, their name, email address
+    and result from PT activity
     """
 
     def __init__(self, full_name: str, name_from_file: str, packet_name: str, pt_percentage: float) -> None:
@@ -16,7 +16,7 @@ class Student:
         self.compulsory = False
 
     def check_name_correctness(self) -> bool:
-        """kontrola, či sa meno študenta zhoduje s menom, ktoré uviedol v aktivite"""
+        """Check, if student's name equals the one submitted in PT"""
         name_wo_accents = unidecode.unidecode(self.full_name.lower())
         name_wo_accents_reversed = self.__reverse_name(name_wo_accents)
         return name_wo_accents == self.packet_name or name_wo_accents_reversed == self.packet_name
@@ -26,7 +26,7 @@ class Student:
 
     @staticmethod
     def __reverse_name(name: str) -> str:
-        """obrátenie mena, pre prípad, že ho študent uvedie ako Meno_Priezvisko"""
+        """Reverse name, in case student enters it in Name_Surname format"""
         words = name.split(' ')
         reversed_name = ' '.join(reversed(words))
         return reversed_name

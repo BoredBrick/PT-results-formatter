@@ -2,7 +2,7 @@ import configparser
 
 
 def reset_settings(parser: configparser) -> None:
-    """Reset údajov na pôvodné odskúšané hodnoty"""
+    """Reset values to their default values."""
     def_values = ["0", "1", "5", "*comma_separated.csv", "0", "2", "3", "*details.csv", "1", "*povinne.csv"]
     set_settings(parser, def_values)
 

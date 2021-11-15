@@ -1,20 +1,19 @@
-import csv  # modul pre prácu s csv súbormi
-import glob  # globovanie súborov, aby užívateľ nemusel zadávať jeho názov
-import os  # použíté pri vytváraní priečinkov
-import sys  # exit systému pri chybe so súbormi
-from os import path  # získanie current working directory
-import configparser  # parser na získanie údajov zo settings súboru
-
-import gui  # použité na vyskakovacie okná pri chybách
+import csv  # module for csv files support
+import glob  # file globbing, will find files containing given phrases
+import os  # used to make directories
+import sys  # exit program if one of he required files is missing
+from os import path  # used to get current working directory
+import configparser  # parser used to manipulate data  from settings file
+import gui  # error popup windows support
 from student import Student
 
 
 class DataProcessing:
 
     """
-    Trieda, ktorá spravuje všetky dostupné dáta - to znamená súbor so študentami,
-    kde získa mail každého z nich a následne samotný súbor s výsledkami,
-    všetko sformátuje a vytvorí výstupy
+    Class, which manages all available data - which means file with students,
+    where it gets mail of each of them and then file with results itself,
+    it formats everything accordingly and creates import files for moodle
     """
 
     def __init__(self) -> None:
@@ -22,7 +21,7 @@ class DataProcessing:
 
     @staticmethod
     def get_file(file_type: str, cfg: configparser) -> str:
-        """getovanie súboru s výsledkami alebo so zoznamom študentov"""
+        """Get file with student data / activity results"""
         if file_type == "results":
             file = glob.glob(cfg["activity_cols"]["glob"])
         elif file_type == "students":
@@ -32,19 +31,19 @@ class DataProcessing:
 
         if file_type != "compulsory":
             if len(file) == 0:
-                gui.generic_error("Priečinok neobsahuje požadované súbory \
-                    (zoznam študentov alebo výpis aktivity)")
+                gui.generic_error(
+                    "Directory does not contain some of the reguired files (student vypis / activity results)")
                 sys.exit(0)
             elif len(file) > 1:
                 gui.generic_error(
-                    "Priečinok obsahuje viacero súborov, ktoré by mohli byť použité ako zoznam"
-                    "študentov alebo ako výpis aktivity. Odstráňte nepotrebné súbory.")
+                    "Directory contains multiple files, which could be used as a "
+                    "student vypis or activity results. Remove unsused files.")
                 sys.exit(0)
 
         if file_type == "compulsory" and len(file) == 0:
             return ""
 
-        return file[0]  # konvertuje list na string
+        return file[0]  # convert list to string
 
     @staticmethod
     def get_dict_of_compulsory(compulsory_file: str, cfg: configparser) -> dict:
@@ -70,19 +69,20 @@ class DataProcessing:
     def create_file_comp_not_submitted(compulsory_dict: dict) -> None:
         for key, value in compulsory_dict.items():
             if value == False:
-                with open("vysledky/povinnáNeodovzdaná.txt", "a+",  encoding='utf-8') as file:
-                    file.write(f'{key} neodovzdal/a povinnú DÚ \n')
+                with open("results/compulsoryNotSubmitted.txt", "a+",  encoding='utf-8') as file:
+                    file.write(f'{key} did not submit compulsory homework \n')
 
     def get_activity_name(self, results_file: str, cfg: configparser):
         """
-        V danom stĺpci sa nachádza cely názov odovzdaného súboru, za predpokladu
-        že študent odovzdal súbor v správnom formáte. Kedže poznám študentov, tak
-        som pridal kontrolu, ktorá hľadá dva za sebou zhodné názvy
+        Given column contains name of submitted file, za predpokladu
+        that student has submitted file in the correct format. But I know how
+        students are, so I added an extra check, which looks for two matching
+        filenames.
         """
         with open(results_file) as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
-            UNDERSCORES_TO_FILTER = 6  # kolko _ oddeluje nazov aktivity a datum s menom
+            UNDERSCORES_TO_FILTER = 6  # how many underscores separate activity name with date
             first_activity_check = ""
             second_activity_check = ""
             file_name_col = cfg.getint("activity_cols", "file_name")
@@ -101,10 +101,10 @@ class DataProcessing:
                 second_activity_check = ""
 
             if self.activity_name == "":
-                self.activity_name = "Neznámy názov aktivity"
+                self.activity_name = "Unknown activity name"
 
     def get_and_assign_student_mails(self, students: list, students_file: str, cfg: configparser) -> None:
-        """Prejde množinou mailov a priradí ich študentom, ktorí odovzdali zadanie"""
+        """Iterates trought all mails and assigns one to those students, who submitted their homework"""
         with open(students_file, encoding='utf-8') as student_data:
             csv_reader = csv.reader(student_data)
             next(csv_reader)
@@ -126,7 +126,7 @@ class DataProcessing:
 
     @staticmethod
     def extract_student_data(row: list, students: list, full_score: int, cfg: configparser) -> None:
-        """Získanie všetkých potrebných dát zo súboru z výsledkami aktivity"""
+        """Getting all needed data from activity results file"""
         file_name_col = cfg.getint("activity_cols", "file_name")
         full_name = row[file_name_col].split("_")[0][1:].strip()
         temp = row[file_name_col].rsplit("_", 2)
@@ -143,31 +143,32 @@ class DataProcessing:
         students.append(Student(full_name, name_from_file, packet_name, pt_percentage))
 
     def create_import_file(self, students: list) -> None:
-        """rozhodovanie, aký výstup použiť podľa správnosti PT mena a prítomnosti mailu"""
+        """Deciding, which output file to use, based on correct PT name and if their 
+        mail has been found"""
         for student in students:
             student_has_email = student.email_found()
             student_has_correct_pt_name = student.check_name_correctness()
             if student.compulsory:
                 self.write_to_compulsory_submitted(student)
             elif student_has_correct_pt_name and student_has_email:
-                self.write_to_import_file(student, "importStudBezChyb.csv")
-                self.write_to_import_file(student, "importVsetci.csv")
-            elif student_has_email:  # študent uviedol nesprávne meno v aktivite
-                self.write_to_import_file(student, "importStudSChybami.csv")
+                self.write_to_import_file(student, "importStudNoErrors.csv")
+                self.write_to_import_file(student, "importEveryone.csv")
+            elif student_has_email:  # student used incorrect name in PT
+                self.write_to_import_file(student, "importStudSWithErrors.csv")
                 self.write_to_list_of_students_with_errors(student, "wrong_name")
-                self.write_to_import_file(student, "importVsetci.csv")
-            else:  # nebolo možné priradiť mail ku študentovi
+                self.write_to_import_file(student, "importEveryone.csv")
+            else:  # program has not been able to assing mail to student
                 self.write_to_list_of_students_with_errors(student, "missing_mail")
 
     def write_to_import_file(self, student: Student, file__name: str) -> None:
-        """zapisovanie do samotných súborov na import"""
-        file_path = f'vysledky/{file__name}'
+        """writing to files used for moodle import"""
+        file_path = f'results/{file__name}'
 
         with open(file_path, "a+", encoding='utf-8', newline="") as import_file:
             writer = csv.writer(import_file)
             filesize = path.getsize(file_path)
             if filesize == 0:
-                writer.writerow(["Email", f'Zadanie: {self.activity_name}'])
+                writer.writerow(["Email", f'Activity: {self.activity_name}'])
 
             string = f'{student.email} {student.pt_percentage}'
             row = list(string.split())
@@ -175,26 +176,27 @@ class DataProcessing:
 
     @staticmethod
     def write_to_compulsory_submitted(student: Student):
-        with open("vysledky/povinnáOdovzdaná.txt", "a+", encoding='utf-8') as file:
-            file.write(f'{student.full_name} odovzdal/a zadanie na {student.pt_percentage}% \n')
+        with open("results/compulsorySubmitted.txt", "a+", encoding='utf-8') as file:
+            file.write(f'{student.full_name} scored {student.pt_percentage}% \n')
 
     @staticmethod
     def write_to_list_of_students_with_errors(student: Student, error_type: str) -> None:
-        """pri nesprávnom mene/chýbajúcom maily sa táto skutočnost zapíše do samostatného súboru"""
+        """If student is missing mail or has submitted PT activity with incorrect name,  
+        it will be noted in this file"""
 
-        with open("vysledky/Nesprávne odovzdané.txt", "a+") as file:
+        with open("results/studentsWithErrors.txt", "a+") as file:
             if error_type == "missing_mail":
                 file.write(
-                    f'Študentovi {student.full_name}, ktorý/á mal/a z aktivity \
-                    {student.pt_percentage}% nebolo možné priradiť email \n')
+                    f'Student {student.full_name}, who scored \
+                    {student.pt_percentage}% has not been assigned an email \n')
             if error_type == "wrong_name":
-                file.write(f'{student.full_name} odovzdal/a zadanie \
-                    v PT s menom: {student.packet_name} \n')
+                file.write(f'{student.full_name} submitted PT activity \
+                    with username {student.packet_name} \n')
 
     @staticmethod
     def _clear_results_file() -> None:
-        """vyčistí priečinok od starých súborov s výsledkami"""
-        folder_name = "vysledky"
+        """Deletes old files from results folder"""
+        folder_name = "results"
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
         else:
@@ -202,7 +204,7 @@ class DataProcessing:
                 os.unlink(file.path)
 
     def process_pt_results(self, results_file_name: str, students: list, full_score: int, cfg: configparser) -> None:
-        """spracovanie celého súboru s výsledkami aktivity """
+        """Process the file with activity results """
         self._clear_results_file()
         with open(results_file_name) as results:
             csv_reader = csv.reader(results)
