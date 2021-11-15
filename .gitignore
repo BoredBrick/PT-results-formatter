@@ -1,3 +1,4 @@
 zoznam_studentov-comma_separated.csv
 5BN103 PS1-PS1_cv05_DU_VLANs -92204_zip-grades-details.csv
-vysledky
+results/
+__pycache__/

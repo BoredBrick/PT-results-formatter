@@ -9,7 +9,7 @@ def main_menu() -> None:
     sg.theme('DarkAmber')
     layout = [[sg.Button("Start"), sg.Button("Settings"), sg.Button("About"), sg.Exit("Exit")]]
 
-    window = sg.Window("Main menu", layout, no_titlebar=True, keep_on_top=True)
+    window = sg.Window("Main menu", layout, no_titlebar=True, keep_on_top=True, scaling=2)
     while True:
         event, _values = window.read()
         if event == "Exit":
@@ -17,10 +17,10 @@ def main_menu() -> None:
         elif event == "Start":
             break
         elif event == "About":
-            sg.PopupOK(" Application used for processing results from PT's activity grader "
+            sg.PopupOK("Application used for processing results from PT's activity grader "
                        "into format, which allows their simple mass import into moodle \n"
                        "Made as a part of bachelor's thesis: ",
-                       " \"Zvýšenie automatizácie v procesoch pri využívaní systému e-vzdelávanie a LMS Moodle\" ",
+                       " \"Automation of processes when using UNIZA e-vzdelavanie system and LMS Moodle\" ",
                        "Daniel Caban 2021/2022",
                        no_titlebar=True, keep_on_top=True)
         elif event == "Settings":
@@ -30,7 +30,7 @@ def main_menu() -> None:
 
 def edit_settings() -> None:
     """
-    Ponuka, where user can edit which column is csv files contains required data
+    Menu, where user can edit which column in csv files contains required data
     + globbing of said files. Made for future proofing.
     """
     sg.theme('DarkAmber')

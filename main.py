@@ -2,14 +2,14 @@ import configparser
 import gui
 from data_processing import DataProcessing
 
-if __name__ == "__main__":
+
+def main() -> None:
     cfg = configparser.ConfigParser()
     cfg.read("settings.ini")
 
     dataProcessing = DataProcessing()
 
     results_file = dataProcessing.get_file("results", cfg)
-
     dataProcessing.get_activity_name(results_file, cfg)
     stud_file = dataProcessing.get_file("students", cfg)
 
@@ -25,6 +25,10 @@ if __name__ == "__main__":
     dataProcessing.mark_compulsory_students(compulsory_students, students)
 
     dataProcessing.create_import_file(students)
-
     dataProcessing.create_file_comp_not_submitted(compulsory_students)
+
     gui.export_successful()
+
+
+if __name__ == "__main__":
+    main()
