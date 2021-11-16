@@ -115,7 +115,6 @@ class DataProcessing:
 
     def process_pt_results(self, results_file_name: str, students: list, full_score: int, cfg: configparser) -> None:
         """Process every activity result from results file """
-        self._clear_results_file()
         with open(results_file_name) as results:
             csv_reader = csv.reader(results)
             next(csv_reader)

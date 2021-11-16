@@ -22,6 +22,7 @@ def main() -> None:
     compulsory_file = file_handler.get_file("compulsory", cfg)
     compulsory_students = data_processing.get_dict_of_compulsory(compulsory_file, cfg)
 
+    file_handler.clear_results_file()
     data_processing.process_pt_results(results_file, students, FULL_SCORE, cfg)
     data_processing.get_and_assign_student_mails(students, stud_file, cfg)
     data_processing.mark_compulsory_students(compulsory_students, students)
