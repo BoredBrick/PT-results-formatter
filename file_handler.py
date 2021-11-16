@@ -85,7 +85,7 @@ class FileHandler:
     @staticmethod
     def write_to_list_of_students_with_errors(student: Student, error_type: str) -> None:
         """If student is missing mail or has submitted PT activity with incorrect name,
-        it will be noted in this file"""
+        it will be noted in this file."""
 
         with open("results/studentsWithErrors.txt", "a+") as file:
             if error_type == "missing_mail":
