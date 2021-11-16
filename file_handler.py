@@ -96,7 +96,7 @@ class FileHandler:
 
     @staticmethod
     def clear_results_file() -> None:
-        """Deletes old files from results folder"""
+        """Deletes old files from results folder."""
         folder_name = "results"
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
