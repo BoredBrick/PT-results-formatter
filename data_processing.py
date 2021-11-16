@@ -108,7 +108,7 @@ class DataProcessing:
 
         pt_percentage_col = cfg.getint("activity_cols", "percentage")
         pt_percentage = round((float(row[pt_percentage_col]) / full_score * 100), 2)
-        # If PT username is Guest, we cannot check who solved this activity, so we mark it zero
+        # If PT username is Guest, we cannot check who solved this activity, so we mark it 0
         if packet_name == "Guest" or pt_percentage < 60:
             pt_percentage = 0
         students.append(Student(full_name, name_from_file, packet_name, pt_percentage))
