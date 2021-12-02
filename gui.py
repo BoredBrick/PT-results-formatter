@@ -9,7 +9,7 @@ def main_menu() -> None:
     sg.theme('DarkAmber')
     layout = [[sg.Button("Start"), sg.Button("Settings"), sg.Button("About"), sg.Exit("Exit")]]
 
-    window = sg.Window("Main menu", layout, no_titlebar=True, keep_on_top=True, scaling=2)
+    window = sg.Window("Main menu", layout, no_titlebar=True, grab_anywhere=True, keep_on_top=True, scaling=2)
     while True:
         event, _values = window.read()
         if event == "Exit":
@@ -22,7 +22,7 @@ def main_menu() -> None:
                        "Made as a part of bachelor's thesis: ",
                        " \"Automation of processes when using UNIZA e-vzdelavanie system and LMS Moodle\" ",
                        "Daniel Caban 2021/2022",
-                       no_titlebar=True, keep_on_top=True)
+                       no_titlebar=True, grab_anywhere=True, keep_on_top=True)
         elif event == "Settings":
             edit_settings()
     window.close()
@@ -54,7 +54,7 @@ def edit_settings() -> None:
 
     layout = [[sg.Column(column1), sg.Column(column2)],
               [sg.Button("Ok", size=(10, 1)), sg.Button("Reset", size=(10, 1)), sg.Button("Exit", size=(10, 1))]]
-    window = sg.Window("Settings", layout, no_titlebar=True, keep_on_top=True)
+    window = sg.Window("Settings", layout, no_titlebar=True, grab_anywhere=True, keep_on_top=True)
 
     event, values = window.read()
     if event == "Ok":
@@ -77,7 +77,7 @@ def get_activity_max_points() -> int:
                   [sg.InputText()],
                   [sg.Submit("Ok"), sg.Cancel("Exit")]]
 
-        window = sg.Window("Max points", layout, no_titlebar=True, keep_on_top=True)
+        window = sg.Window("Max points", layout, no_titlebar=True, grab_anywhere=True, keep_on_top=True)
 
         event, values = window.read()
         window.close()
@@ -86,7 +86,7 @@ def get_activity_max_points() -> int:
         try:
             return int(values[0])
         except ValueError:
-            sg.popup_error("An integer is required", no_titlebar=True)
+            sg.popup_error("An integer is required", grab_anywhere=True, no_titlebar=True)
 
 
 def generic_error(message: str) -> None:
@@ -96,4 +96,4 @@ def generic_error(message: str) -> None:
 
 def export_successful() -> None:
     sg.theme('DarkAmber')
-    sg.PopupOK("All files have been successfully created", no_titlebar=True)
+    sg.PopupOK("All files have been successfully created", grab_anywhere=True, no_titlebar=True)

@@ -52,7 +52,9 @@ class FileHandler:
             student_has_correct_pt_name = student.check_name_correctness()
             if student.compulsory:
                 self.write_to_compulsory_submitted(student)
-            elif student_has_correct_pt_name and student_has_email:
+                student.pt_percentage = 0
+
+            if student_has_correct_pt_name and student_has_email:
                 self.write_to_import_file(student, "importStudNoErrors.csv", activity)
                 self.write_to_import_file(student, "importEveryone.csv", activity)
             elif student_has_email:  # student used incorrect name in PT
