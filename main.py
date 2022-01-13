@@ -1,3 +1,5 @@
+import sys
+import logging
 import configparser
 import gui
 from data_processing import DataProcessing
@@ -31,6 +33,17 @@ def main() -> None:
     file_handler.create_file_comp_not_submitted(compulsory_students)
 
     gui.export_successful()
+
+
+logging.basicConfig(filename='logfile.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('logger')
+
+
+def my_handler(_type, value, _tb):
+    logger.exception("Uncaught exception: {0}".format(str(value)))
+
+
+sys.excepthook = my_handler
 
 
 if __name__ == "__main__":
