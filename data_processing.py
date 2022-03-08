@@ -83,7 +83,7 @@ class DataProcessing:
             email_col = cfg.getint("stud_cols", "email")
 
             for row in csv_reader:
-                full_name = (row[surname_col] + " " + row[name_col]).strip()
+                full_name = (row[name_col] + " " + row[surname_col]).strip()
                 email = row[email_col]
                 self.__map_email_to_student(students, email, full_name)
 
