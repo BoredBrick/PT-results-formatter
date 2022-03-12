@@ -89,7 +89,7 @@ class FileHandler:
         """If student is missing mail or has submitted PT activity with incorrect name,
         it will be noted in this file"""
 
-        with open("results/studentsWithErrors.txt", "a+") as file:
+        with open("results/studentsWithErrors.txt", "a+", encoding='utf-8') as file:
             if error_type == "missing_mail":
                 file.write(
                     f'Student {student.full_name}, who scored {student.pt_percentage}% has not been assigned an email \n')

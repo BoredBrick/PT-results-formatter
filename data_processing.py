@@ -21,7 +21,7 @@ class DataProcessing:
         """
         name_dict = {}
         try:
-            with open(compulsory_file) as file:
+            with open(compulsory_file, encoding='utf-8') as file:
                 csv_reader = csv.reader(file)
                 next(csv_reader)
                 for row in csv_reader:
@@ -49,7 +49,7 @@ class DataProcessing:
         students are, so I added an extra check, which looks for two matching
         filenames.
         """
-        with open(results_file) as file:
+        with open(results_file, encoding='ansi') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
             UNDERSCORES_TO_FILTER = 6  # how many underscores separate activity name with date
@@ -115,7 +115,7 @@ class DataProcessing:
 
     def process_pt_results(self, results_file_name: str, students: list, full_score: int, cfg: configparser) -> None:
         """Process every activity result from results file """
-        with open(results_file_name) as results:
+        with open(results_file_name, encoding='ansi') as results:
             csv_reader = csv.reader(results)
             next(csv_reader)
             for row in csv_reader:
