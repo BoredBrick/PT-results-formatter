@@ -21,7 +21,7 @@ class DataProcessing:
         """
         name_dict = {}
         try:
-            with open(compulsory_file, encoding='utf-8') as file:
+            with open(compulsory_file) as file:
                 csv_reader = csv.reader(file)
                 next(csv_reader)
                 for row in csv_reader:
