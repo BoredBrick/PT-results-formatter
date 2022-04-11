@@ -41,7 +41,8 @@ def edit_settings() -> None:
                [sg.Text('Name', size=(10, 1)), sg.Input(cfg["stud_cols"]["name"], size=(10, 1))],
                [sg.Text('Surname', size=(10, 1)), sg.Input(cfg["stud_cols"]["surname"], size=(10, 1))],
                [sg.Text('Email', size=(10, 1)), sg.Input(cfg["stud_cols"]["email"], size=(10, 1))],
-               [sg.Text('Glob', size=(10, 1)), sg.Input(cfg["stud_cols"]["glob"], size=(10, 1))]]
+               [sg.Text('Glob', size=(10, 1)), sg.Input(cfg["stud_cols"]["glob"], size=(10, 1))],
+               [sg.Checkbox('Check for 60% result', default=cfg["stud_cols"].getboolean('check60percent'))]]
 
     column2 = [[sg.Text('File with PT activity results')],
                [sg.Text('PT name',  size=(10, 1)), sg.Input(
