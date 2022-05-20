@@ -58,17 +58,20 @@ class DataProcessing:
             file_name_col = cfg.getint("activity_cols", "file_name")
 
             for row in csv_reader:
-                if first_activity_check == "":
-                    first_activity_check = row[file_name_col].split(
+                try:
+                    if first_activity_check == "":
+                        first_activity_check = row[file_name_col].split(
+                            "/")[1].rsplit("_", UNDERSCORES_TO_FILTER)[0]
+                        continue
+                    second_activity_check = row[file_name_col].split(
                         "/")[1].rsplit("_", UNDERSCORES_TO_FILTER)[0]
+                    if first_activity_check == second_activity_check:
+                        self.activity_name = first_activity_check
+                        break
+                    first_activity_check = second_activity_check
+                    second_activity_check = ""
+                except:
                     continue
-                second_activity_check = row[file_name_col].split(
-                    "/")[1].rsplit("_", UNDERSCORES_TO_FILTER)[0]
-                if first_activity_check == second_activity_check:
-                    self.activity_name = first_activity_check
-                    break
-                first_activity_check = second_activity_check
-                second_activity_check = ""
 
             if self.activity_name == "":
                 self.activity_name = "Unknown activity name"

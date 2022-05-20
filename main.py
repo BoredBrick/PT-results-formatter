@@ -45,6 +45,5 @@ def my_handler(_type, value, _tb):
 
 sys.excepthook = my_handler
 
-
 if __name__ == "__main__":
     main()
